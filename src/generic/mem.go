@@ -1,0 +1,48 @@
+// Copyright (c) 2013 Alexander Beifuß <7beifuss@informatik.uni-hamburg.de>
+// Johann Weging <johann@weging.net>
+//
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
+//
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+package MPI
+
+/*
+#include <mpi.h>
+*/
+import "C"
+
+import (
+	"unsafe"
+	// "reflect"
+)
+
+//Alloc_mem
+//Allocates a specified memory segment.
+//TODO: Do we need this???
+func Alloc_mem(size Aint, info Info) (unsafe.Pointer, int) {
+
+	var ptr unsafe.Pointer
+
+	err := C.MPI_Alloc_mem(
+		C.MPI_Aint(size),
+		C.MPI_Info(info), ptr)
+
+	return ptr, int(err)
+}
+
+//Free_mem
+//Frees memory that has been allocated using Alloc_mem.
+//TODO: refactoring - interface{} instead of unsafe.Pointer
+func Free_mem(base unsafe.Pointer) int {
+
+	return int(C.MPI_Free_mem(base))
+}
