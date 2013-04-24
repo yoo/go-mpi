@@ -54,6 +54,7 @@ if it differs form the default package names.""")
 
   argParser.add_argument("--debug", "-d", action="store_true", default=False,
     dest="debug", help="Debug build the bindings. (Enable array bound checking.)")
+
   argParser.add_argument("implDeps",action="store", default="generic",
     choices=["generic", "openmpi", "mpich2"],
     help="Choose a mpi implementation, the bindings should be optimised for. 'generic'\
@@ -71,7 +72,7 @@ def output_callback(lines):
 
 # Ensure the directory structure inside the GOPATH
 def setupSrc(path, options):
-
+  depPath = ""
   srcPath = os.path.join(path, "src/", options.installName)
   print("Creating GOPATH directory structure.")
   if options.verbose:
@@ -98,13 +99,21 @@ def setupSrc(path, options):
 
   if options.implDeps == "openmpi":
     print("Open MPI.")
-    try:
-      sh.cp(sh.glob("src/openmpi/*"), srcPath, v=options.verbose,
-        _out=output_callback)
-    except(Exception) as e:
-      print(e.stdout)
-      print("Failed to copy source code files for openmpi.")
-      sys.exit(1)
+    depPath = "src/openmpi"
+  elif options.implDeps == "mpich2":
+    print("mpich2.")
+    depPath = "src/mpich2"
+
+  if os.path.isdir(depPath):
+    return
+
+  try:
+    sh.cp(sh.glob(depPath+"/*"), srcPath, v=options.verbose,
+      _out=output_callback)
+  except(Exception) as e:
+    print(e.stdout)
+    print("Failed to copy source code files for ", options.implDeps)
+    sys.exit(1)
 
 def main():
 
@@ -126,6 +135,7 @@ def main():
   libPath = ""
   lib = ""
   includePath = ""
+  pkgName = ""
 
   # Set default values
   for path in libPathDefault:
@@ -135,28 +145,25 @@ def main():
   for path in includePathDefault:
       includePath += " -I " + path
 
-  # use pkg-config to override the  default values
-  # use a custom package name if provided
-  if options.pkgConfig != pkgDefault:
+  # If no pkg-config package name is provided with the command line use the
+  # implementation default
+  if options.pkgConfig == pkgDefault:
+    if options.implDeps == "openmpi":
+      pkgName = "ompi"
+    elif options.implDeps == "mpich2":
+      pkgName = "mpich2"
+
+
+  if options.implDeps != "generic":
     try:
-      libPath = str(sh.pkg_config(options.pkgConfig, libs=True))
+      print("Running pkg-config with", options.implDeps)
+      libPath = str(sh.pkg_config(pkgName, libs=True))
       lib = ""
-      includePath = str(sh.pkg_config(options.pkgConfig, cfalgs=True))
+      includePath = str(sh.pkg_config(pkgName, cflags=True))
     except(Exception) as e:
       print(e.stdout)
       print("pkg-config failed.")
-      sys.exit(1)
-  # or use the default package name of the chosen MPI implementation
-  else:
-    if options.implDeps == "openmpi":
-      try:
-        libPath = str(sh.pkg_config("ompi", libs=True))
-        lib = ""
-        includePath = str(sh.pkg_config("ompi", cflags=True))
-      except(Exception) as e:
-        print(e.stdout)
-        print("pkg-config failed.")
-        sys.exit(1)
+
   # if ldflags or cflags are provided with the command line override the flags
   if options.libPath != libPathDefault:
     libPath = ""

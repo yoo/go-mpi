@@ -49,7 +49,6 @@ const (
 	//ARGVS_NULL     = C.MPI_ARGVS_NULL     /* NULL argument vectors */
 	//ERRCODES_IGNORE      = C.MPI_ERRCODES_IGNORE      /* don't return error codes */
 	MAX_PORT_NAME        = C.MPI_MAX_PORT_NAME        /* max port name length */
-	MAX_NAME_LEN         = C.MPI_MAX_NAME_LEN         /* max port name length */
 	ORDER_C              = C.MPI_ORDER_C              /* C row major order */
 	ORDER_FORTRAN        = C.MPI_ORDER_FORTRAN        /* Fortran column major order */
 	DISTRIBUTE_BLOCK     = C.MPI_DISTRIBUTE_BLOCK     /* block distribution */

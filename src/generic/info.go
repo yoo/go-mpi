@@ -17,10 +17,6 @@ package MPI
 
 /*
 #include <mpi.h>
-
-void* foo(){
-	return ((void*)&(ompi_mpi_info_null));
-};
 */
 import "C"
 

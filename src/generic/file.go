@@ -80,12 +80,10 @@ func File_open(comm Comm, filename string, amode int, info Info) (*File, int) {
 	// C.dbg(name)
 
 	err := C.MPI_File_open(
-		//C.MPI_Comm(comm),
-		((C.MPI_Comm)(&(C.ompi_mpi_comm_world))),
+		C.MPI_Comm(comm),
 		name,
 		C.int(amode),
-		((C.MPI_Info)(&(C.ompi_mpi_info_null))),
-		//C.MPI_Info(info),
+		C.MPI_Info(info),
 		&fh)
 
 	fmt.Println(err)
