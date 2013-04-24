@@ -9,53 +9,56 @@ At the moment go-mpi support  <a href=http://www.open-mpi.de/>Open MPI</a> and <
 
 The install script uses pkg-config to determine the the include- and library
 path for the MPI implementation.
-<pre>
-  git clone git://github.com/JohannWeging/go-mpi.git
-  cd go-mpi
-  # For Open MPI
-  ./install openmpi
-  # Or for MPICH2
-  ./install mpich2
-</pre>
+```
+git clone git://github.com/JohannWeging/go-mpi.git
+cd go-mpi
+# For Open MPI
+./install openmpi
+# Or for MPICH2
+./install mpich2
+```
 
 If the package differs from the default package name:
-<pre>
-  ./install < implementation > --pkg-config < package_name >
-</pre>
+```
+./install <implementation> --pkg-config <package_name>
+```
 
 If the path can not be determined by pkg-config it can be set manually.
-The library needs to be in the format of lib< name >.so
-<pre>
-  ./install < implementation > --lib mympi --lib-path /usr/lib/mympilibrary
-</pre>
+The library needs to be in the format of:
+```
+lib<name>.so
+```
+```
+./install <implementation> --lib mympi --lib-path /usr/lib/mympilibrary
+```
 
 Once the bindings support more than one implementation you may want to have more than one version of the bindings installed. By default the package name is MPI.
-<pre>
-  ./install openmpi --install-as openmpi
-  ./install mpich2 --install-as mpich2
-</pre>
+```
+./install openmpi --install-as openmpi
+./install mpich2 --install-as mpich2
+```
 
 Now you can use booth implementations in your program.
-<pre>
-  package main
+```
+package main
 
-  import MPI "openmpi"
+import MPI "openmpi"
 
-  [...]
-</pre>
-<pre>
-  package main
+[...]
+```
+```
+package main
 
-  import MPI "mpich2"
+import MPI "mpich2"
 
-  [...]
-</pre>
+[...]
+```
 ## Syntax
 
 The syntax is similar to the C syntax of MPI.
-<pre>
-  < package_name >.Mpi_function(arguments)
-</pre>
+```
+<package_name>.Mpi_function(arguments)
+```
 
 If the bindings are imported as "MPI":
 <pre>
