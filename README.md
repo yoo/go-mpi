@@ -5,7 +5,7 @@ go-mpi are GO bindings for the Message Passing Interface <a href=http://www.mpi-
 ## Installation
 
 MPI is a standard but the different implementations differ in some details.
-At the moment the binds support  <a href=http://www.open-mpi.de/>Open MPI</a> and <a href=http://www.mpich.org/>MPICH</a> version 2.
+At the moment go-mpi support  <a href=http://www.open-mpi.de/>Open MPI</a> and <a href=http://www.mpich.org/>MPICH</a> version 2.
 
 The install script uses pkg-config to determine the the include- and library
 path for the MPI implementation.
@@ -20,13 +20,13 @@ path for the MPI implementation.
 
 If the package differs from the default package name:
 <pre>
-  ./install <implementation> --pkg-config <package_name>
+  ./install < implementation > --pkg-config < package_name >
 </pre>
 
 If the path can not be determined by pkg-config it can be set manually.
-The library needs to be in the format of lib<name>.so
+The library needs to be in the format of lib< name >.so
 <pre>
-  ./install <implementation> --lib mympi --lib-path /usr/lib/mympilibrary
+  ./install < implementation > --lib mympi --lib-path /usr/lib/mympilibrary
 </pre>
 
 Once the bindings support more than one implementation you may want to have more than one version of the bindings installed. By default the package name is MPI.
@@ -54,7 +54,7 @@ Now you can use booth implementations in your program.
 
 The syntax is similar to the C syntax of MPI.
 <pre>
-  <package_name>.Mpi_function(arguments)
+  < package_name >.Mpi_function(arguments)
 </pre>
 
 If the bindings are imported as "MPI":
