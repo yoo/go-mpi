@@ -571,20 +571,21 @@ func Isend(buffer interface{},
 	dataType Datatype,
 	dest int,
 	tag int,
-	comm Comm) (Request, int) {
+	comm Comm,
+	request *Request) int {
 
 	bufferVoidPointer := Get_void_ptr(buffer)
+	cRequestPointer := (*C.MPI_Request)(request)
 
-	var request C.MPI_Request
 	err := C.MPI_Isend(bufferVoidPointer,
 		C.int(sendCount),
 		C.MPI_Datatype(dataType),
 		C.int(dest),
 		C.int(tag),
 		C.MPI_Comm(comm),
-		&request)
+		cRequestPointer)
 
-	return Request(request), int(err)
+	return int(err)
 }
 
 // Irecv
@@ -594,9 +595,9 @@ func Irecv(buffer interface{},
 	datatype Datatype,
 	source int,
 	tag int,
-	comm Comm) (Request, int) {
+	comm Comm,
+	request *Request) int {
 
-	var request C.MPI_Request
 	recvBufferVoidPointer := Get_void_ptr(buffer)
 
 	err := C.MPI_Irecv(recvBufferVoidPointer,
@@ -605,20 +606,19 @@ func Irecv(buffer interface{},
 		C.int(source),
 		C.int(tag),
 		C.MPI_Comm(comm),
-		&request)
-
-	return Request(request), int(err)
+		(*C.MPI_Request)(request))
+	return int(err)
 }
 
 //Wait
 //Waits for an MPI send or receive to complete.
-func Wait(request Request) (Status, int) {
+func Wait(request *Request) (Status, int) {
 
 	var status C.MPI_Status
-	var cRequest C.MPI_Request
-	cRequest = C.MPI_Request(request)
+	var cRequest *C.MPI_Request
+	cRequest = (*C.MPI_Request)(request)
 
-	err := C.MPI_Wait(&cRequest, &status)
+	err := C.MPI_Wait(cRequest, &status)
 
 	return Status(status), int(err)
 }
@@ -628,15 +628,11 @@ func Wait(request Request) (Status, int) {
 func Waitall(sliceOfRequests []Request) ([]Status, int) {
 
 	length := len(sliceOfRequests)
-	cSliceOfRequests := make([]C.MPI_Request, length)
-	cSliceOfStatuses := make([]C.MPI_Status, length)
+	cSliceOfRequests := (*C.MPI_Request)(&sliceOfRequests[0])
 	sliceOfStatuses := make([]Status, length)
+	cSliceOfStatuses := make([]C.MPI_Status, length)
 
-	for i := 0; i < length; i++ {
-		cSliceOfRequests[i] = C.MPI_Request(sliceOfRequests[i])
-	}
-
-	err := C.MPI_Waitall(C.int(length), &cSliceOfRequests[0], &cSliceOfStatuses[0])
+	err := C.MPI_Waitall(C.int(length), cSliceOfRequests, &cSliceOfStatuses[0])
 
 	for i := 0; i < length; i++ {
 		sliceOfStatuses[i] = Status(cSliceOfStatuses[i])
@@ -650,15 +646,11 @@ func Waitall(sliceOfRequests []Request) ([]Status, int) {
 func Waitany(sliceOfRequests []Request) (int, Status, int) {
 
 	length := len(sliceOfRequests)
-	cSliceOfRequests := make([]C.MPI_Request, length)
+	cSliceOfRequests := (*C.MPI_Request)(&sliceOfRequests[0])
 	var index C.int
 	var status C.MPI_Status
 
-	for i := 0; i < length; i++ {
-		cSliceOfRequests[i] = C.MPI_Request(sliceOfRequests[i])
-	}
-
-	err := C.MPI_Waitany(C.int(length), &cSliceOfRequests[0], &index, &status)
+	err := C.MPI_Waitany(C.int(length), cSliceOfRequests, &index, &status)
 
 	return int(index), Status(status), int(err)
 
@@ -669,18 +661,14 @@ func Waitany(sliceOfRequests []Request) (int, Status, int) {
 func Waitsome(sliceOfRequests []Request) (int, []int, []Status, int) {
 
 	length := len(sliceOfRequests)
-	cSliceOfRequests := make([]C.MPI_Request, length)
+	cSliceOfRequests := (*C.MPI_Request)(&sliceOfRequests[0])
 	cSliceOfIndices := make([]C.int, length)
 	cSliceOfStatuses := make([]C.MPI_Status, length)
 	sliceOfIndices := make([]int, length)
 	sliceOfStatuses := make([]Status, length)
 	var count C.int
 
-	for i := 0; i < length; i++ {
-		cSliceOfRequests[i] = C.MPI_Request(sliceOfRequests[i])
-	}
-
-	err := C.MPI_Waitsome(C.int(length), &cSliceOfRequests[0], &count, &cSliceOfIndices[0], &cSliceOfStatuses[0])
+	err := C.MPI_Waitsome(C.int(length), cSliceOfRequests, &count, &cSliceOfIndices[0], &cSliceOfStatuses[0])
 
 	for i := 0; i < length; i++ {
 		sliceOfIndices[i] = int(cSliceOfIndices[i])
