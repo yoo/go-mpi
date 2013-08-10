@@ -27,19 +27,23 @@ import (
 
 //Init
 //Initializes the MPI execution environment
-func Init(argv []string) int {
+func Init(argv *[]string) int {
 
-	argc := len(argv)
+	argc := len(*argv)
 	c_argc := C.int(argc)
 
 	c_argv := make([]*C.char, argc)
-	for index, value := range argv {
+	for index, value := range *argv {
 		c_argv[index] = C.CString(value)
 		defer C.free(unsafe.Pointer(c_argv[index]))
 	}
 
 	err := C.MPI_Init(&c_argc, (***C.char)(unsafe.Pointer(&c_argv)))
-
+	goargs := make([]string, c_argc)
+	for i := 0; i < int(c_argc); i++ {
+		goargs[i] = C.GoString(c_argv[i])
+	}
+	*argv = goargs
 	return int(err)
 }
 
