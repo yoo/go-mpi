@@ -217,6 +217,7 @@ def main():
         print(sh.go(installFlags))
     except(Exception) as e:
         print(e.stdout)
+        print(e.stderr)
         print("Go install failed!")
         sys.exit(1)
 main()
