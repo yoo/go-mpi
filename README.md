@@ -72,5 +72,5 @@ Output parameter like request objects are returned by the function and not passe
   err = MPI_Irecv(recvBuffer, count, MPI_INT, 0, 1, MPI_COMM_WROLD, &request)
 
   GO:
-  request, err = MPI.Irecv(recvBuffer, count, MPI.INT, 0, 1, MPI.COMM_WORLD)
+  err = MPI.Irecv(recvBuffer, count, MPI.INT, 0, 1, MPI.COMM_WORLD, &request)
 </pre>
