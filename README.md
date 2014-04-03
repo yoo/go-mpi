@@ -7,51 +7,18 @@ go-mpi are GO bindings for the Message Passing Interface <a href=http://www.mpi-
 MPI is a standard but the different implementations differ in some details.
 At the moment go-mpi support  <a href=http://www.open-mpi.de/>Open MPI</a> and <a href=http://www.mpich.org/>MPICH</a> version 2.
 
-The install script uses pkg-config to determine the the include- and library
-path for the MPI implementation.
-```
-git clone git://github.com/JohannWeging/go-mpi.git
-cd go-mpi
-# For Open MPI
-./install openmpi
-# Or for MPICH2
-./install mpich2
+To tell go where to look for the MPI library use the CGO_LDFALG environment variable. The following instructions uses the default path for Open MPI and MPICH.
+
+For Open MPI:
+```sh
+export CGO_LDFLAGS='-L/usr/lib/openmpi -lmpi'
+go get -tags openmpi github.com/JohannWeging/go-mpi
 ```
 
-If the package differs from the default package name:
-```
-./install <implementation> --pkg-config <package_name>
-```
-
-If the path can not be determined by pkg-config it can be set manually.
-The library needs to be in the format of:
-```
-lib<name>.so
-```
-```
-./install <implementation> --lib mympi --lib-path /usr/lib/mympilibrary
-```
-
-Once the bindings support more than one implementation you may want to have more than one version of the bindings installed. By default the package name is MPI.
-```
-./install openmpi --install-as openmpi
-./install mpich2 --install-as mpich2
-```
-
-Now you can use booth implementations in your program.
-```
-package main
-
-import MPI "openmpi"
-
-[...]
-```
-```
-package main
-
-import MPI "mpich2"
-
-[...]
+For MPICH:
+```sh
+export CGO_LDFLAGS='-L/usr/lib/ -lmpich'
+go get -tags mpich github.com/JohannWeging/go-mpi
 ```
 ## Syntax
 
