@@ -13,13 +13,8 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+// +build openmpi
+
 package MPI
 
-/*
-#include <mpi.h>
-*/
-import "C"
-
-const (
-	MAX_NAME_LEN = C.MPI_MAX_NAME_LEN /* max port name length */
-)
+// #cgo LDFLAGS: -L/usr/lib/openmpi -lmpi

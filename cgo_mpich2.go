@@ -13,13 +13,8 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+// +build mpich2
+
 package MPI
 
-/*
-#include <mpi.h>
-*/
-import "C"
-
-const (
-	ERR_SYSRESOURCE = C.MPI_ERR_SYSRESOURCE
-)
+// #cgo LDFLAGS: -L/usr/lib -lmpich
