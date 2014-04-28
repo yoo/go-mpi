@@ -38,6 +38,14 @@ MPI_Errhandler HELPER_MPI_Get_errhandler_null( void ){
   return MPI_ERRHANDLER_NULL;
 }
 
+MPI_Errhandler HELPER_MPI_Get_errors_return( void ){
+  return MPI_ERRORS_RETURN;
+}
+
+MPI_Errhandler HELPER_MPI_Get_errors_are_fatal( void ){
+  return MPI_ERRORS_ARE_FATAL;
+}
+
 MPI_Request HELPER_MPI_Get_request_null( void ){
   return MPI_REQUEST_NULL;
 }
