@@ -7,37 +7,30 @@ go-mpi are GO bindings for the Message Passing Interface <a href=http://www.mpi-
 MPI is a standard but the different implementations differ in some details.
 At the moment go-mpi support  <a href=http://www.open-mpi.de/>Open MPI</a> and <a href=http://www.mpich.org/>MPICH</a> version 2.
 
-To tell go where to look for the MPI library use the CGO_LDFALG environment variable. The following instructions uses the default path for Open MPI and MPICH.
+To tell go where to look for mpi.h and mpi library, use the CGO_CFLAGS and CGO_LDFALG environment variable to indicate respectively. You can find paths of mpi.h and mpi library through command:
 
-For Open MPI:
-```sh
-export CGO_LDFLAGS='-L/usr/lib/openmpi -lmpi'
-go get -tags openmpi github.com/JohannWeging/go-mpi
-```
+	$ mpichversion
 
-For MPICH:
-```sh
-export CGO_LDFLAGS='-L/usr/lib/ -lmpich'
-go get -tags mpich github.com/JohannWeging/go-mpi
-```
+
+Assume mpi.h dir is "/usr/local/include", mpi library dir is "/usr/local/lib", you could compile go-mpi/MPI like the following:
+
+	export CGO_CFLAGS='-I/usr/local/include'
+	export CGO_LDFLAGS='-L/usr/local/lib -lmpich'
+	go install go-mpi/MPI
+
+
 ## Syntax
 
-The syntax is similar to the C syntax of MPI.
-```
-<package_name>.Mpi_function(arguments)
-```
+Firstly you should import "go-mpi/MPI" in your go-mpi application.
 
-If the bindings are imported as "MPI":
-<pre>
-  err = MPI.Init(os.Args)
-</pre>
+	import "go-mpi/MPI"
 
-Output parameter like request objects are returned by the function and not passed as pointers inside the arguments.
 
-<pre>
-  C:
-  err = MPI_Irecv(recvBuffer, count, MPI_INT, 0, 1, MPI_COMM_WROLD, &request)
+The syntax of MPI invokes in go-mpi is similar to it in C-binding MPI implementations.
 
-  GO:
-  err = MPI.Irecv(recvBuffer, count, MPI.INT, 0, 1, MPI.COMM_WORLD, &request)
-</pre>
+	<package_name>.Mpi_function(arguments)
+
+For example:
+
+	err = MPI.Init(&os.Args)
+	err = MPI.Irecv(recvBuffer, count, MPI.INT, 0, 1, MPI.COMM_WORLD, &request)
